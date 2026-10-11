@@ -51,8 +51,6 @@ def _to_order(item):
 
 
 def _to_number(value):
-    if not isinstance(value, Decimal):
-        return value
-    if value == value.to_integral_value():
-        return int(value)
-    return float(value)
+    if isinstance(value, Decimal):
+        return format(value, "f")
+    return value
