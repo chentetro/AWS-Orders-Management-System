@@ -46,7 +46,7 @@ def _to_order(item):
         "createdAt": item.get("createdAt"),
         "price": _to_number(item.get("price")),
         "description": item.get("description"),
-        "updatedAt": item.get("updatedAt"),
+        "lastModifiedAt": item.get("lastModifiedAt"),
     }
 
 
