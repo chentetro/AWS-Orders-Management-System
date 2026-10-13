@@ -13,6 +13,7 @@ class OrderDeletedPublisher:
         self._sns = sns_client or _sns
 
     def publish(self, order: dict) -> None:
+        order_id = order["orderId"]
         self._sns.publish(
             TopicArn=os.environ["ORDER_DELETED_TOPIC_ARN"],
             Subject=f"Order Deleted: {order_id}",
