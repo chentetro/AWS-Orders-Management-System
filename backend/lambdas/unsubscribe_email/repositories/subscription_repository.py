@@ -18,19 +18,26 @@ class SubscriptionRepository:
         topic_arn = os.environ["ORDER_DELETED_TOPIC_ARN"]
         normalized = email.lower()
         request = {"TopicArn": topic_arn}
+        pending = False
         while True:
             page = self._sns.list_subscriptions_by_topic(**request)
             for subscription in page.get("Subscriptions", []):
                 if subscription.get("Endpoint", "").lower() != normalized:
                     continue
+                if subscription.get("Protocol") != "email":
+                    continue
                 arn = subscription.get("SubscriptionArn", "")
                 if arn == "PendingConfirmation":
-                    raise ValueError(
-                        "Confirm the subscription email before you can unsubscribe"
-                    )
+                    pending = True
+                    continue
                 self._sns.unsubscribe(SubscriptionArn=arn)
                 return
             token = page.get("NextToken")
             if not token:
-                raise SubscriptionNotFoundError(email)
+                break
             request["NextToken"] = token
+        if pending:
+            raise ValueError(
+                "Confirm the subscription email before you can unsubscribe"
+            )
+        raise SubscriptionNotFoundError(email)

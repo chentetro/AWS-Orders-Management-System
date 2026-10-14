@@ -22,6 +22,9 @@ class SubscriptionService:
 
 
 def _require_email(email: str) -> str:
-    if not isinstance(email, str) or not _EMAIL_PATTERN.fullmatch(email.strip()):
+    if not isinstance(email, str):
         raise ValueError("email must be a valid email address")
-    return email.strip()
+    address = email.strip().lower()
+    if not _EMAIL_PATTERN.fullmatch(address):
+        raise ValueError("email must be a valid email address")
+    return address
