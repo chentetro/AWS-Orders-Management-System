@@ -1,4 +1,5 @@
 import os
+from decimal import Decimal
 
 import boto3
 from botocore.exceptions import ClientError
@@ -41,9 +42,25 @@ class OrderRepository:
             if error.response["Error"]["Code"] == "ConditionalCheckFailedException":
                 raise OrderNotFoundError(order_id) from None
             raise
-        return response["Attributes"]
+        return _to_order(response["Attributes"])
 
     def _orders_table(self):
         if self._table is None:
             self._table = self._dynamodb.Table(os.environ["ORDERS_TABLE_NAME"])
         return self._table
+
+
+def _to_order(item):
+    return {
+        "orderId": item.get("orderId"),
+        "createdAt": item.get("createdAt"),
+        "price": _to_number(item.get("price")),
+        "description": item.get("description"),
+        "lastModifiedAt": item.get("lastModifiedAt"),
+    }
+
+
+def _to_number(value):
+    if isinstance(value, Decimal):
+        return format(value, "f")
+    return value
