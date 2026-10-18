@@ -37,21 +37,27 @@ def _build_pdf(orders: list[dict]) -> bytes:
     pdf.set_auto_page_break(auto=True, margin=15)
     pdf.add_page()
     pdf.set_font("Helvetica", size=16)
-    pdf.multi_cell(0, 10, "Deleted orders summary")
+    _write_line(pdf, 10, "Deleted orders summary")
     pdf.ln(2)
     pdf.set_font("Helvetica", size=12)
     if not orders:
-        pdf.multi_cell(0, 8, "No deleted orders.")
+        _write_line(pdf, 8, "No deleted orders.")
         return bytes(pdf.output())
 
     for index, order in enumerate(orders, start=1):
         pdf.set_font("Helvetica", style="B", size=12)
-        pdf.multi_cell(0, 8, f"Order {index}")
+        _write_line(pdf, 8, f"Order {index}")
         pdf.set_font("Helvetica", size=11)
         for name, label in _FIELDS:
-            pdf.multi_cell(0, 7, _pdf_text(f"{label}: {order[name]}"))
+            _write_line(pdf, 7, _pdf_text(f"{label}: {order[name]}"))
         pdf.ln(3)
     return bytes(pdf.output())
+
+
+def _write_line(pdf: FPDF, height: float, text: str) -> None:
+    # fpdf2 leaves the cursor at the right edge. The next line then has no room.
+    pdf.set_x(pdf.l_margin)
+    pdf.multi_cell(0, height, text, new_x="LMARGIN", new_y="NEXT")
 
 
 def _pdf_text(value: str) -> str:
