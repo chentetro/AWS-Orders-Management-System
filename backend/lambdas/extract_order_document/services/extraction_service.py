@@ -7,7 +7,7 @@ from clients.textract_client import TextractClient
 from repositories.document_repository import DocumentRepository
 
 _PRICE_WITH_AMOUNT = re.compile(
-    r"^price\b\s*[:\-]?\s*(?:usd\s*)?\$?\s*(\d+(?:[.,]\d+)?)\s*$",
+    r"^price\b\s*[:\-]?\s*(?:usd\s*)?\$?\s*(\d+(?:[.,]\d+)?)\s*\$?$",
     re.IGNORECASE,
 )
 _PRICE_LABEL_ONLY = re.compile(r"^price\b\s*[:\-]?\s*$", re.IGNORECASE)
