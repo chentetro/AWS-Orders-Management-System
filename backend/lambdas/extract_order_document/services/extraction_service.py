@@ -11,6 +11,7 @@ _PRICE_WITH_AMOUNT = re.compile(
     re.IGNORECASE,
 )
 _PRICE_LABEL_ONLY = re.compile(r"^price\b\s*[:\-]?\s*$", re.IGNORECASE)
+_KEY_LINE = re.compile(r"^[A-Za-z][A-Za-z ]{0,30}:\s*\S")
 _AMOUNT_ONLY = re.compile(r"^\$?\s*(\d+(?:[.,]\d+)?)\s*$")
 
 
@@ -80,9 +81,15 @@ def _find_price(lines: list[str]) -> tuple[str, int]:
 
 
 def _description_before_price(lines: list[str], price_index: int) -> str:
-    # The sentence is the paragraph before the Price key. A number inside that
+    # The sentence is the paragraph before the first key. A number inside that
     # sentence is not the order price.
-    parts = [line.strip() for line in lines[:price_index] if line.strip()]
+    parts = []
+    for line in lines[:price_index]:
+        text = line.strip()
+        if _KEY_LINE.match(text) or _PRICE_LABEL_ONLY.match(text):
+            break
+        if text:
+            parts.append(text)
     return " ".join(parts)
 
 

@@ -4,14 +4,6 @@ from botocore.exceptions import ClientError
 # Reused across warm invocations.
 _textract = boto3.client("textract")
 
-# DetectDocumentText rejects a PDF that has more than one page.
-_SINGLE_PAGE_ERRORS = {
-    "UnsupportedDocumentException",
-    "InvalidParameterException",
-    "BadDocumentException",
-    "DocumentTooLargeException",
-}
-
 
 class TextractClient:
     def __init__(self, textract_client=None):
@@ -23,7 +15,7 @@ class TextractClient:
                 Document={"S3Object": {"Bucket": bucket, "Name": key}}
             )
         except ClientError as error:
-            if error.response["Error"]["Code"] in _SINGLE_PAGE_ERRORS:
+            if error.response["Error"]["Code"] == "UnsupportedDocumentException":
                 raise ValueError(
                     "document must be a single-page PDF, PNG, or JPEG"
                 ) from None
