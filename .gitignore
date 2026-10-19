@@ -1,1 +1,10 @@
 *.zip
+node_modules/
+
+backend/lambdas/deleted_orders_summary/bin/
+backend/lambdas/deleted_orders_summary/defusedxml/
+backend/lambdas/deleted_orders_summary/fontTools/
+backend/lambdas/deleted_orders_summary/fpdf/
+backend/lambdas/deleted_orders_summary/PIL/
+backend/lambdas/deleted_orders_summary/share/
+backend/lambdas/deleted_orders_summary/*.dist-info/
