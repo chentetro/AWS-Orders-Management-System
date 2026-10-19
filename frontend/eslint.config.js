@@ -4,7 +4,7 @@ import reactHooks from 'eslint-plugin-react-hooks'
 import reactRefresh from 'eslint-plugin-react-refresh'
 import tseslint from 'typescript-eslint'
 import { defineConfig, globalIgnores } from 'eslint/config'
-import vitest from 'eslint-plugin-vitest'
+import vitest from '@vitest/eslint-plugin'
 
 export default defineConfig([
   globalIgnores(['dist']),
@@ -13,7 +13,7 @@ export default defineConfig([
     extends: [
       js.configs.recommended,
       tseslint.configs.recommended,
-      reactHooks.configs.flat.recommended,
+      reactHooks.configs['recommended-latest'],
       reactRefresh.configs.vite,
     ],
     languageOptions: {
@@ -27,9 +27,9 @@ export default defineConfig([
     plugins: {
       vitest,
     },
-    extends: [
-      vitest.configs.recommended,
-    ],
+    rules: {
+      ...vitest.configs.recommended.rules,
+    },
     languageOptions: {
       globals: {
         ...globals.browser,
