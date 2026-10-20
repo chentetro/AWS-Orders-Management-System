@@ -21,14 +21,14 @@ function getApiErrorMessage(error: unknown): string {
       "message" in data &&
       typeof data.message === "string"
     ) {
-      return data.message;//הודעת שגיאה מהשרת שאני כתבתי , נמצא בשדה MESSAGE
+      return data.message; //הודעת שגיאה מהשרת שאני כתבתי , נמצא בשדה MESSAGE
     }
 
-    return error.message;//הודעת שגיאה מובנית של AXIOS, אם לא כתבתי MESSAGE
+    return error.message; //הודעת שגיאה מובנית של AXIOS, אם לא כתבתי MESSAGE
   }
 
   if (error instanceof Error) {
-    return error.message;//שגיאה שנזרקת מהפרונט, לא קיים כרגע בקוד
+    return error.message; //שגיאה שנזרקת מהפרונט, לא קיים כרגע בקוד
   }
 
   return "Something went wrong";
@@ -133,7 +133,7 @@ export default function NotificationSubscriptions() {
       </div>
 
       <p className="mt-4 text-sm text-slate-600">
-        Get notified whenever an order is created or changed.
+        Get notified by email whenever an order is deleted.
       </p>
 
       {successMessage && (
