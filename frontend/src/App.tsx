@@ -1,11 +1,9 @@
-import Button from "./components/Button";
-import Input from "./components/Input";
+import NotificationSubscriptions from "./components/NotificationSubscriptions";
 
 function App() {
   return (
-    <div className="p-6">
-      <Button>Click me</Button>
-      <Input id="name" label="Name" />
+    <div className="mx-auto max-w-xl p-6">
+      <NotificationSubscriptions />
     </div>
   );
 }
