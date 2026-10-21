@@ -1,4 +1,5 @@
 import axios from "axios";
+import { API_BASE_URL } from "../services/apiBaseUrl";
 import {
   subscribeToTopic,
   unsubscribeFromTopic,
@@ -8,7 +9,6 @@ vi.mock("axios");
 
 describe("subscriptionService", () => {
   const mockedPost = vi.mocked(axios.post);
-  const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
 
   beforeEach(() => {
     mockedPost.mockReset();
@@ -20,7 +20,7 @@ describe("subscriptionService", () => {
     await subscribeToTopic("user@example.com");
 
     expect(mockedPost).toHaveBeenCalledWith(
-      `${apiBaseUrl}/subscriptions/subscribe`,
+      `${API_BASE_URL}/subscriptions/subscribe`,
       { email: "user@example.com" },
     );
   });
@@ -31,7 +31,7 @@ describe("subscriptionService", () => {
     await unsubscribeFromTopic("user@example.com");
 
     expect(mockedPost).toHaveBeenCalledWith(
-      `${apiBaseUrl}/subscriptions/unsubscribe`,
+      `${API_BASE_URL}/subscriptions/unsubscribe`,
       { email: "user@example.com" },
     );
   });
