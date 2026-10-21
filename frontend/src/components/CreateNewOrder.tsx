@@ -6,6 +6,9 @@ import Button from "./Button";
 import Input from "./Input";
 
 const ALLOWED_EXTENSIONS = new Set(["pdf", "png", "jpg", "jpeg"]);
+const MAX_DOCUMENT_BYTES = 5 * 1024 * 1024;
+const DECIMAL_PRICE_PATTERN = /^\d+(\.\d+)?$/;
+const ZERO_PRICE_PATTERN = /^0+(\.0+)?$/;
 
 type CreateNewOrderProps = {
   onOrderCreated?: () => void;
@@ -56,8 +59,11 @@ function validatePrice(value: string): string | undefined {
     return "Price is required";
   }
 
-  const amount = Number(trimmed);
-  if (!Number.isFinite(amount) || amount <= 0) {
+  // Keep price as a decimal string (same idea as the Lambda) — never use Number().
+  if (
+    !DECIMAL_PRICE_PATTERN.test(trimmed) ||
+    ZERO_PRICE_PATTERN.test(trimmed)
+  ) {
     return "Price must be a positive number";
   }
 
@@ -139,6 +145,11 @@ export default function CreateNewOrder({
     const extension = getFileExtension(selectedFile);
     if (!extension || !ALLOWED_EXTENSIONS.has(extension)) {
       setDocumentError("Order document must be a PDF, PNG, or JPG");
+      return;
+    }
+
+    if (selectedFile.size > MAX_DOCUMENT_BYTES) {
+      setDocumentError("Document must be 5 MB or smaller");
       return;
     }
 
