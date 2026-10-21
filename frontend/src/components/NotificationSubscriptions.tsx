@@ -1,38 +1,15 @@
-import { isAxiosError } from "axios";
 import { useState, type ChangeEvent, type FormEvent } from "react";
 import {
   subscribeToTopic,
   unsubscribeFromTopic,
 } from "../services/subscriptionService";
+import { getApiErrorMessage } from "../utils/getApiErrorMessage";
 import Button from "./Button";
 import Input from "./Input";
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 type SubscriptionAction = "subscribe" | "unsubscribe";
-
-function getApiErrorMessage(error: unknown): string {
-  if (isAxiosError(error)) {
-    const data: unknown = error.response?.data;
-
-    if (
-      typeof data === "object" &&
-      data !== null &&
-      "message" in data &&
-      typeof data.message === "string"
-    ) {
-      return data.message; //הודעת שגיאה מהשרת שאני כתבתי , נמצא בשדה MESSAGE
-    }
-
-    return error.message; //הודעת שגיאה מובנית של AXIOS, אם לא כתבתי MESSAGE
-  }
-
-  if (error instanceof Error) {
-    return error.message; //שגיאה שנזרקת מהפרונט, לא קיים כרגע בקוד
-  }
-
-  return "Something went wrong";
-}
 
 function BellIcon() {
   return (
