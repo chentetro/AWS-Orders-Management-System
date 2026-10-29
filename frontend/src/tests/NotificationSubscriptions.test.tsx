@@ -97,7 +97,11 @@ describe("NotificationSubscriptions", () => {
 
   it("subscribes successfully, shows a banner, and clears the email", async () => {
     const user = userEvent.setup();
-    mockSubscribeToTopic.mockResolvedValue(undefined);
+    mockSubscribeToTopic.mockResolvedValue({
+      email: "user@example.com",
+      message:
+        "Confirmation email sent. The address receives delete notices only after it is confirmed.",
+    });
 
     render(<NotificationSubscriptions />);
 
@@ -110,7 +114,7 @@ describe("NotificationSubscriptions", () => {
     });
     expect(
       screen.getByText(
-        "Subscription started. Check your inbox to confirm the SNS email.",
+        "Confirmation email sent. The address receives delete notices only after it is confirmed.",
       ),
     ).toBeInTheDocument();
     expect(input).toHaveValue("");
@@ -118,7 +122,10 @@ describe("NotificationSubscriptions", () => {
 
   it("unsubscribes successfully, shows a banner, and clears the email", async () => {
     const user = userEvent.setup();
-    mockUnsubscribeFromTopic.mockResolvedValue(undefined);
+    mockUnsubscribeFromTopic.mockResolvedValue({
+      email: "user@example.com",
+      message: "Unsubscribed",
+    });
 
     render(<NotificationSubscriptions />);
 
@@ -129,7 +136,7 @@ describe("NotificationSubscriptions", () => {
     await waitFor(() => {
       expect(mockUnsubscribeFromTopic).toHaveBeenCalledWith("user@example.com");
     });
-    expect(screen.getByText("Unsubscribed successfully.")).toBeInTheDocument();
+    expect(screen.getByText("Unsubscribed")).toBeInTheDocument();
     expect(input).toHaveValue("");
   });
 
@@ -152,10 +159,11 @@ describe("NotificationSubscriptions", () => {
 
   it("disables the input and buttons while a request is in progress", async () => {
     const user = userEvent.setup();
-    let resolveSubscribe: (() => void) | undefined;
+    let resolveSubscribe:
+      ((value: { email: string; message: string }) => void) | undefined;
     mockSubscribeToTopic.mockImplementation(
       () =>
-        new Promise<void>((resolve) => {
+        new Promise((resolve) => {
           resolveSubscribe = resolve;
         }),
     );
@@ -175,7 +183,10 @@ describe("NotificationSubscriptions", () => {
     expect(subscribeButton).toBeDisabled();
     expect(unsubscribeButton).toBeDisabled();
 
-    resolveSubscribe?.();
+    resolveSubscribe?.({
+      email: "user@example.com",
+      message: "Confirmation email sent.",
+    });
 
     await waitFor(() => {
       expect(input).not.toBeDisabled();

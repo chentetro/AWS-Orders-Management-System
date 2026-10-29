@@ -70,16 +70,12 @@ export default function NotificationSubscriptions() {
     setSuccessMessage(undefined);
 
     try {
-      if (action === "subscribe") {
-        await subscribeToTopic(trimmedEmail);
-        setSuccessMessage(
-          "Subscription started. Check your inbox to confirm the SNS email.",
-        );
-      } else {
-        await unsubscribeFromTopic(trimmedEmail);
-        setSuccessMessage("Unsubscribed successfully.");
-      }
+      const result =
+        action === "subscribe"
+          ? await subscribeToTopic(trimmedEmail)
+          : await unsubscribeFromTopic(trimmedEmail);
 
+      setSuccessMessage(result.message);
       setEmail("");
     } catch (requestError) {
       setError(getApiErrorMessage(requestError));

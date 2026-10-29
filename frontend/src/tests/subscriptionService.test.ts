@@ -14,22 +14,33 @@ describe("subscriptionService", () => {
     mockedPost.mockReset();
   });
 
-  it("posts the email to the subscribe endpoint", async () => {
-    mockedPost.mockResolvedValue({ data: {} });
+  it("posts the email to the subscribe endpoint and returns the result", async () => {
+    const response = {
+      email: "user@example.com",
+      message:
+        "Confirmation email sent. The address receives delete notices only after it is confirmed.",
+    };
+    mockedPost.mockResolvedValue({ data: response });
 
-    await subscribeToTopic("user@example.com");
-
+    await expect(subscribeToTopic("user@example.com")).resolves.toEqual(
+      response,
+    );
     expect(mockedPost).toHaveBeenCalledWith(
       `${API_BASE_URL}/subscriptions/subscribe`,
       { email: "user@example.com" },
     );
   });
 
-  it("posts the email to the unsubscribe endpoint", async () => {
-    mockedPost.mockResolvedValue({ data: {} });
+  it("posts the email to the unsubscribe endpoint and returns the result", async () => {
+    const response = {
+      email: "user@example.com",
+      message: "Unsubscribed",
+    };
+    mockedPost.mockResolvedValue({ data: response });
 
-    await unsubscribeFromTopic("user@example.com");
-
+    await expect(unsubscribeFromTopic("user@example.com")).resolves.toEqual(
+      response,
+    );
     expect(mockedPost).toHaveBeenCalledWith(
       `${API_BASE_URL}/subscriptions/unsubscribe`,
       { email: "user@example.com" },
