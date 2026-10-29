@@ -1,0 +1,9 @@
+---
+alwaysApply: true
+---
+
+## TypeScript Types & Services Convention
+
+- All API request payloads and response contracts must be defined in dedicated files inside `src/types/` (e.g., `src/types/order.ts`, `src/types/report.ts`).
+- Never define or export API response types directly inside `src/services/*Service.ts`.
+- Every Service file must import its types from `../types/<domain>` to maintain separation of concerns and avoid coupling between UI and transport layers.
