@@ -7,13 +7,6 @@ import type {
 } from "../types/order";
 import { API_BASE_URL } from "./apiBaseUrl";
 
-export type {
-  CreateOrderPayload,
-  ExtractedOrderFields,
-  Order,
-  UpdateOrderPayload,
-} from "../types/order";
-
 export async function extractOrderDocument(
   fileName: string,
   contentBase64: string,

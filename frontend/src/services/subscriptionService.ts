@@ -1,10 +1,6 @@
 import axios from "axios";
+import type { SubscriptionResult } from "../types/subscription";
 import { API_BASE_URL } from "./apiBaseUrl";
-
-export type SubscriptionResult = {
-  email: string;
-  message: string;
-};
 
 export async function subscribeToTopic(
   email: string,
