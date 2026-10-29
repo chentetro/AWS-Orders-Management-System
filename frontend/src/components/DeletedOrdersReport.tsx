@@ -15,8 +15,13 @@ export default function DeletedOrdersReport() {
 
     try {
       const summary = await getDeletedOrdersSummary();
+
+      if (!summary.url) {
+        setError("Summary did not include a download URL");
+        return;
+      }
+
       setReportUrl(summary.url);
-      window.open(summary.url, "_blank", "noopener,noreferrer");
     } catch (requestError) {
       setError(getApiErrorMessage(requestError));
     } finally {
@@ -28,12 +33,12 @@ export default function DeletedOrdersReport() {
     <section className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
-          <p className="text-xs font-semibold tracking-wide text-slate-400 uppercase">
-            Revenue history
-          </p>
           <h2 className="mt-0.5 text-lg font-semibold text-slate-900">
             Deleted orders report
           </h2>
+          <p className="text-xs font-semibold tracking-wide text-slate-400 uppercase">
+            Amazon S3
+          </p>
         </div>
 
         <Button
