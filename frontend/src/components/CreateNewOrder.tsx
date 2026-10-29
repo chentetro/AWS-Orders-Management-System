@@ -2,10 +2,7 @@ import { useRef, useState, type ChangeEvent, type FormEvent } from "react";
 import { createOrder, extractOrderDocument } from "../services/orderService";
 import type { Order } from "../types/order";
 import { getApiErrorMessage } from "../utils/getApiErrorMessage";
-import {
-  validateDescription,
-  validatePrice,
-} from "../utils/orderValidation";
+import { validateDescription, validatePrice } from "../utils/orderValidation";
 import { readFileAsDataUrl } from "../utils/readFileAsDataUrl";
 import Button from "./Button";
 import Input from "./Input";

@@ -2,10 +2,7 @@ import { useEffect, useState, type ChangeEvent } from "react";
 import { deleteOrder, updateOrder } from "../services/orderService";
 import type { Order } from "../types/order";
 import { formatDate } from "../utils/formatDate";
-import {
-  validateDescription,
-  validatePrice,
-} from "../utils/orderValidation";
+import { validateDescription, validatePrice } from "../utils/orderValidation";
 import Input from "./Input";
 import OrderActions from "./OrderActions";
 

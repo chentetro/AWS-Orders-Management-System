@@ -8,7 +8,6 @@ type OrderActionsProps = {
   onSave: () => Promise<void>;
   onDelete: () => Promise<void>;
   onError?: (message: string) => void;
-  disabled?: boolean;
 };
 
 function Spinner() {
@@ -26,20 +25,25 @@ export default function OrderActions({
   onSave,
   onDelete,
   onError,
-  disabled = false,
 }: OrderActionsProps) {
   const [isDeleting, setIsDeleting] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+  const [isConfirmingDelete, setIsConfirmingDelete] = useState(false);
 
-  const isBusy = isDeleting || isSaving || disabled;
+  const isBusy = isDeleting || isSaving;
 
-  async function handleDelete() {
+  function handleCancelDelete() {
+    setIsConfirmingDelete(false);
+  }
+
+  async function handleConfirmDelete() {
     setIsDeleting(true);
 
     try {
       await onDelete();
     } catch (error) {
       onError?.(getApiErrorMessage(error));
+      setIsConfirmingDelete(false);
     } finally {
       setIsDeleting(false);
     }
@@ -47,6 +51,7 @@ export default function OrderActions({
 
   async function handlePrimaryAction() {
     if (!isEditing) {
+      setIsConfirmingDelete(false);
       onToggleEdit();
       return;
     }
@@ -60,6 +65,47 @@ export default function OrderActions({
     } finally {
       setIsSaving(false);
     }
+  }
+
+  function handleToggleEdit() {
+    setIsConfirmingDelete(false);
+    onToggleEdit();
+  }
+
+  if (isConfirmingDelete) {
+    return (
+      <div className="flex flex-col items-stretch gap-2 sm:items-end">
+        <p className="text-sm text-slate-600" role="status">
+          Delete this order? This cannot be undone.
+        </p>
+        <div className="flex flex-wrap items-center gap-2">
+          <Button
+            type="button"
+            variant="secondary"
+            disabled={isBusy}
+            onClick={handleCancelDelete}
+          >
+            Keep order
+          </Button>
+          <Button
+            type="button"
+            variant="secondary"
+            disabled={isBusy}
+            onClick={() => void handleConfirmDelete()}
+            className="border-red-200 text-red-700 hover:border-red-300 hover:bg-red-50"
+          >
+            {isDeleting ? (
+              <>
+                <Spinner />
+                Deleting...
+              </>
+            ) : (
+              "Yes, delete"
+            )}
+          </Button>
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -87,7 +133,7 @@ export default function OrderActions({
           type="button"
           variant="secondary"
           disabled={isBusy}
-          onClick={onToggleEdit}
+          onClick={handleToggleEdit}
         >
           Cancel
         </Button>
@@ -97,17 +143,10 @@ export default function OrderActions({
         type="button"
         variant="secondary"
         disabled={isBusy}
-        onClick={() => void handleDelete()}
+        onClick={() => setIsConfirmingDelete(true)}
         className="border-red-200 text-red-700 hover:border-red-300 hover:bg-red-50"
       >
-        {isDeleting ? (
-          <>
-            <Spinner />
-            Deleting...
-          </>
-        ) : (
-          "Delete"
-        )}
+        Delete
       </Button>
     </div>
   );
