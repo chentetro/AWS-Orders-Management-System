@@ -1,17 +1,17 @@
 import { useRef, useState, type ChangeEvent, type FormEvent } from "react";
 import { createOrder, extractOrderDocument } from "../services/orderService";
+import type { Order } from "../types/order";
 import { getApiErrorMessage } from "../utils/getApiErrorMessage";
+import { validateDescription, validatePrice } from "../utils/orderValidation";
 import { readFileAsDataUrl } from "../utils/readFileAsDataUrl";
 import Button from "./Button";
 import Input from "./Input";
 
 const ALLOWED_EXTENSIONS = new Set(["pdf", "png", "jpg", "jpeg"]);
 const MAX_DOCUMENT_BYTES = 5 * 1024 * 1024;
-const DECIMAL_PRICE_PATTERN = /^\d+(\.\d+)?$/;
-const ZERO_PRICE_PATTERN = /^0+(\.0+)?$/;
 
 type CreateNewOrderProps = {
-  onOrderCreated?: () => void;
+  onOrderCreated?: (order: Order) => void;
 };
 
 function PlusIcon() {
@@ -47,32 +47,6 @@ function getFileExtension(file: File): string | undefined {
 
   if (file.type === "image/jpeg") {
     return "jpg";
-  }
-
-  return undefined;
-}
-
-function validatePrice(value: string): string | undefined {
-  const trimmed = value.trim();
-
-  if (!trimmed) {
-    return "Price is required";
-  }
-
-  // Keep price as a decimal string (same idea as the Lambda) — never use Number().
-  if (
-    !DECIMAL_PRICE_PATTERN.test(trimmed) ||
-    ZERO_PRICE_PATTERN.test(trimmed)
-  ) {
-    return "Price must be a positive number";
-  }
-
-  return undefined;
-}
-
-function validateDescription(value: string): string | undefined {
-  if (!value.trim()) {
-    return "Description is required";
   }
 
   return undefined;
@@ -194,14 +168,14 @@ export default function CreateNewOrder({
     setFormError(undefined);
 
     try {
-      await createOrder({
+      const newOrder = await createOrder({
         price: price.trim(),
         description: description.trim(),
       });
 
       resetForm();
       setSuccessMessage("Order created successfully.");
-      onOrderCreated?.();
+      onOrderCreated?.(newOrder);
     } catch (error) {
       setFormError(getApiErrorMessage(error));
     } finally {
