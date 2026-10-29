@@ -2,9 +2,18 @@ import os
 from datetime import datetime, timezone
 
 import boto3
+from botocore.config import Config
 
-# Reused across warm invocations.
-_s3 = boto3.client("s3")
+# Reused across warm invocations. SigV4 + virtual-hosted style avoids
+# SignatureDoesNotMatch on presigned URLs outside us-east-1.
+_s3 = boto3.client(
+    "s3",
+    region_name=os.environ.get("AWS_REGION", "eu-north-1"),
+    config=Config(
+        signature_version="s3v4",
+        s3={"addressing_style": "virtual"},
+    ),
+)
 
 _URL_EXPIRES_IN_SECONDS = 3600
 
