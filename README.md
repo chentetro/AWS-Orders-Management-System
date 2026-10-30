@@ -10,9 +10,8 @@
 [![Python](https://img.shields.io/badge/Python-3.12+-3776AB?logo=python&logoColor=white)](https://www.python.org/)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](#license)
 
-| | |
 | --- | --- |
-| **Live demo** | _Coming soon — paste Amplify URL here_ |
+| **Live demo** | https://main.d8xwpjzf9qbv1.amplifyapp.com |
 
 ---
 
